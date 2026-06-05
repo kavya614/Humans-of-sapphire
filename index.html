@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Humans of Sapphire</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    margin:0;
+    background:#f4f6f9;
+}
+
+header{
+    background:#003366;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+.search-box{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+input{
+    width:300px;
+    padding:10px;
+    font-size:16px;
+}
+
+.months{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:10px;
+}
+
+.month-btn{
+    padding:15px;
+    border:none;
+    background:#0056b3;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.month-btn:hover{
+    background:#003d80;
+}
+
+#years,#profile{
+    margin-top:25px;
+}
+
+.year-btn{
+    margin:5px;
+    padding:10px 15px;
+    cursor:pointer;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+img{
+    width:180px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Humans of Sapphire</h1>
+    <p>Celebrating the People Who Inspire Us</p>
+</header>
+
+<div class="container">
+
+<div class="search-box">
+    <input type="text" id="searchInput"
+    placeholder="Search Teacher Name..."
+    onkeyup="searchTeacher()">
+</div>
+
+<h2>Browse by Month</h2>
+
+<div class="months" id="months"></div>
+
+<div id="years"></div>
+
+<div id="profile"></div>
+
+</div>
+
+<script>
+
+const data = [
+{
+name:"Preeti Sharma",
+month:"November",
+year:"2026",
+photo:"https://via.placeholder.com/180",
+achievement:"Outstanding contribution to student learning."
+},
+
+{
+name:"Riya Verma",
+month:"September",
+year:"2025",
+photo:"https://via.placeholder.com/180",
+achievement:"Excellent leadership and creativity."
+},
+
+{
+name:"Preeti Sharma",
+month:"March",
+year:"2024",
+photo:"https://via.placeholder.com/180",
+achievement:"Organized multiple successful events."
+}
+];
+
+const months = [
+"January","February","March","April",
+"May","June","July","August",
+"September","October","November","December"
+];
+
+const monthContainer = document.getElementById("months");
+
+months.forEach(month=>{
+    let btn=document.createElement("button");
+    btn.innerText=month;
+    btn.className="month-btn";
+    btn.onclick=()=>showYears(month);
+    monthContainer.appendChild(btn);
+});
+
+function showYears(month){
+
+const yearsDiv=document.getElementById("years");
+const profileDiv=document.getElementById("profile");
+
+profileDiv.innerHTML="";
+
+let years=[...new Set(
+data.filter(x=>x.month===month)
+.map(x=>x.year)
+)];
+
+if(years.length===0){
+yearsDiv.innerHTML="<p>No records available.</p>";
+return;
+}
+
+yearsDiv.innerHTML=`<h2>${month}</h2>`;
+
+years.forEach(year=>{
+let btn=document.createElement("button");
+btn.className="year-btn";
+btn.innerText=year;
+
+btn.onclick=()=>{
+showProfile(month,year);
+};
+
+yearsDiv.appendChild(btn);
+});
+}
+
+function showProfile(month,year){
+
+const person=data.find(
+x=>x.month===month && x.year===year
+);
+
+document.getElementById("profile").innerHTML=
+`
+<div class="card">
+<img src="${person.photo}">
+<h2>${person.name}</h2>
+<p><b>Month:</b> ${person.month}</p>
+<p><b>Year:</b> ${person.year}</p>
+<p><b>Achievement:</b> ${person.achievement}</p>
+</div>
+`;
+}
+
+function searchTeacher(){
+
+let value=document
+.getElementById("searchInput")
+.value.toLowerCase();
+
+let results=data.filter(
+x=>x.name.toLowerCase().includes(value)
+);
+
+let output="<h2>Search Results</h2>";
+
+results.forEach(r=>{
+output+=`
+<div class="card" style="margin-bottom:10px;">
+<h3>${r.name}</h3>
+<p>${r.month} ${r.year}</p>
+</div>
+`;
+});
+
+if(value===""){
+output="";
+}
+
+document.getElementById("profile").innerHTML=output;
+}
+
+</script>
+
+</body>
+</html>
